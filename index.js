@@ -25,8 +25,8 @@ async function run() {
     const database = client.db('Booklet')
     const childrenCollection = database.collection('Childrens')
     const literaryCollection = database.collection('literaryfiction')
-    const userCollection = database.collection('users')
-    const instructorCollection = database.collection('instructors')
+    const sciencetechnology = database.collection('ScienceTechnology')
+    const userCollection = database.collection('Signup')
     console.log('database connected')
 
     //  ################ children API START HERE ######################
@@ -162,71 +162,36 @@ async function run() {
 
     //  ################ literaryfiction API END HERE ######################
 
+    //  ################ ScienceTechnology API START HERE ######################
 
-    //  ################ user API START HERE ######################
-
-    // ++++++++++++++++  send user to the database ++++++++++++++
-
-    app.post('/users', async (req, res) => {
-      const user = req.body
-      const result = await userCollection.insertOne(user)
+    //  ++++++++++++++++  send ScienceTechnology to the database ++++++++++++++
+    app.post('/ScienceTechnology', async (req, res) => {
+      const ScienceTechnology = req.body
+      const result = await sciencetechnology.insertOne(ScienceTechnology)
       res.json(result)
     })
 
-    //  ++++++++++++++++++++ get all users +++++++++++++++++++++++++++
-    app.get('/users', async (req, res) => {
-      const cursor = userCollection.find({})
-      const user = await cursor.toArray()
-      res.send(user)
-    })
-
-    // +++++++++++++++++++ get a single user from children collection ++++++++
-    app.get('/users/:id([0-9a-fA-F]{24})', async (req, res) => {
+    // +++++++++++++++++ update data into products collection ++++++++
+    app.put('/ScienceTechnology/:id([0-9a-fA-F]{24})', async (req, res) => {
       const id = req.params.id.trim()
-      const query = { _id: ObjectId(id) }
-      const user = await userCollection.findOne(query)
-      res.json(user)
-    })
+      console.log('updating', id)
+      const updatedScienceTechnology = req.body
+      console.log(updatedScienceTechnology)
+      const filter = { _id: new ObjectId(id) }
+      const options = { upsert: true }
+      const updateDoc = {
+        $set: {
+          image : updatedScienceTechnology.image,
+          title : updatedScienceTechnology.title,
+          price : updatedScienceTechnology.price,
+          totalClass : updatedScienceTechnology.totalClass,
+          totalSheet : updatedScienceTechnology.totalSheet,
+          totalHours : updatedScienceTechnology.totalHours,
+          totalStudent : updatedScienceTechnology.totalStudent,
 
-    
-    //  ################ INSTRUCTOR API START HERE ################
-
-
-    
-    // ++++++++++++++ send instructor info to the databse +++++++++++++++
-
-    app.post('/instructors', async(req,res)=>{
-      const instrutor = req.body;
-      const result = await instructorCollection.insertOne(instrutor); 
-      res.json(result);
-    })
-
-     // ++++++++++++++++++ get all instructors+++++++++++++++++
-
-    app.get('/instructors', async (req,res)=>{
-      const cursor = instructorCollection.find({})
-      const instrutor = await cursor.toArray()
-      res.send(instrutor);
-    })
-
-  //  ++++++++++++++++++++ update instructor into instructor collection +++++++++
-    app.put('/instructors/:id([0-9a-fA-F]{24})', async(req,res)=>{
-      const id = req.params.id.trim();
-      const updateInstrutor = req.body;
-      const filter = {_id: new ObjectId(id)}
-      const options = {upsert:true}
-      const updateDoc ={
-        $set : {
-          image : updateInstrutor.image,
-          name  : updateInstrutor.name,
-          designation : updateInstrutor.designation,
-          institute : updateInstrutor.institute,
-          facebook : updateInstrutor.facebook,
-          github : updateInstrutor.github,
-          linkedin : updateInstrutor.linkedin
         },
       }
-      const result = await instructorCollection.updateOne(
+      const result = await sciencetechnology.updateOne(
         filter,
         updateDoc,
         options,
@@ -234,32 +199,99 @@ async function run() {
       console.log('updating', id)
       res.json(result)
     })
-   
 
-  // +++++++++++++++++++  get a single instructor information from instructores collection ++++++++++++++
-    app.get('/instructors/:id([0-9a-fA-F]{24})', async(req,res)=>{
-      const id = req.params.id.trim()
-      const query = {_id: ObjectId(id)}
-      const instrutor = await instructorCollection.findOne(query)
-      res.json(instrutor)
+
+    //  ++++++++++++++++++++ get all ScienceTechnology +++++++++++++++++++++++++++
+    app.get('/ScienceTechnology', async (req, res) => {
+      const cursor = sciencetechnology.find({})
+      const ScienceTechnology = await cursor.toArray()
+      res.send(ScienceTechnology)
     })
-    // +++++++++++++ delete a instructor information from instructor collection +++++
-    app.delete('/instructors/:id([0-9a-fA-F]{24})', async(req,res)=>{
-      const id = req.params.id.trim();
-      const query = {_id : ObjectId(id)}
-      const result = await instructorCollection.deleteOne(query)
+
+
+    // +++++++++++++++++++ get a single ScienceTechnology from ScienceTechnology collection ++++++++
+    app.get('/ScienceTechnology/:id([0-9a-fA-F]{24})', async (req, res) => {
+      const id = req.params.id.trim()
+      const query = { _id: ObjectId(id) }
+      const ScienceTechnology = await sciencetechnology.findOne(query)
+      res.json(ScienceTechnology)
+    })
+
+
+    // ++++++++++++++++ delete a data from ScienceTechnology collection +++++++++++++++++
+    app.delete('/ScienceTechnology/:id([0-9a-fA-F]{24})', async (req, res) => {
+      const id = req.params.id.trim()
+      const query = { _id: new ObjectId(id) }
+      const result = await sciencetechnology.deleteOne(query)
       res.json(result)
     })
-    //  ################ INSTRUCTOR API START HERE ################
-  } finally {
+
+    //  ################ ScienceTechnology API END HERE ######################
+
+
+    //  ################ user API START HERE ######################
+
+    // ++++++++++++++++  send user to the database ++++++++++++++
+
+    app.post('/signup', async (req, res) => {
+      const user = req.body
+      const email=user.email
+      const name=await userCollection.findOne({email:email})
+      if(name){
+        res.send({status:"error"})
+      }
+      else{
+        const result = await userCollection.insertOne(user)
+        res.json(result)
+      }
+    })
+
+    //  ++++++++++++++++++++ get all Signup +++++++++++++++++++++++++++
+    app.get('/Signup', async (req, res) => {
+      const cursor = userCollection.find({})
+      const user = await cursor.toArray()
+      res.send(user)
+    })
+
+    // +++++++++++++++++++ get a single user from children collection ++++++++
+    app.get('/Signup/:id([0-9a-fA-F]{24})', async (req, res) => {
+      const id = req.params.id.trim()
+      const query = { _id: ObjectId(id) }
+      const user = await userCollection.findOne(query)
+      res.json(user)
+    })
+    
+    app.post('/signin', async (req, res) => {
+      const user = req.body
+      const email=user.email
+      const password=user.password
+
+      const emailcheck=await userCollection.findOne({email:email})
+      if(email){
+        const passwordcheck=await userCollection.findOne({password:password})
+        if(passwordcheck){
+          res.send({status:"success"})
+        }
+        else{
+          res.send({status:"error"})
+        }
+      }
+      else{
+        res.send({status:"No Such User"})
+      }
+    })
+
+
+  }
+  finally {
   }
 }
 run().catch(console.dir)
 
 app.get('/', (req, res) => {
-  res.send('Running CPS app')
+  res.send('Running Booklet app')
 })
 
 app.listen(port, () => {
-  console.log(`CPS on port ${port}`)
+  console.log(`Booklet on port ${port}`)
 })
