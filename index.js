@@ -48,13 +48,11 @@ async function run() {
       const options = { upsert: true }
       const updateDoc = {
         $set: {
-          image : updatedchildren.image,
-          title : updatedchildren.title,
-          price : updatedchildren.price,
-          totalClass : updatedchildren.totalClass,
-          totalSheet : updatedchildren.totalSheet,
-          totalHours : updatedchildren.totalHours,
-          totalStudent : updatedchildren.totalStudent,
+          bookname : updatedchildren.bookname,
+          author_name : updatedchildren.author_name,
+          description : updatedchildren.description,
+          url : updatedchildren.url,
+          img : updatedchildren.img,
           
         },
       }
@@ -115,13 +113,11 @@ async function run() {
       const options = { upsert: true }
       const updateDoc = {
         $set: {
-          image : updatedliteraryfiction.image,
-          title : updatedliteraryfiction.title,
-          price : updatedliteraryfiction.price,
-          totalClass : updatedliteraryfiction.totalClass,
-          totalSheet : updatedliteraryfiction.totalSheet,
-          totalHours : updatedliteraryfiction.totalHours,
-          totalStudent : updatedliteraryfiction.totalStudent,
+          img : updatedliteraryfiction.img,
+          bookname : updatedliteraryfiction.bookname,
+          author_name : updatedliteraryfiction.author_name,
+          description : updatedliteraryfiction.description,
+          url : updatedliteraryfiction.url,
 
         },
       }
@@ -181,13 +177,11 @@ async function run() {
       const options = { upsert: true }
       const updateDoc = {
         $set: {
-          image : updatedScienceTechnology.image,
-          title : updatedScienceTechnology.title,
-          price : updatedScienceTechnology.price,
-          totalClass : updatedScienceTechnology.totalClass,
-          totalSheet : updatedScienceTechnology.totalSheet,
-          totalHours : updatedScienceTechnology.totalHours,
-          totalStudent : updatedScienceTechnology.totalStudent,
+          img : updatedScienceTechnology.img,
+          bookname : updatedScienceTechnology.bookname,
+          author_name : updatedScienceTechnology.author_name,
+          description : updatedScienceTechnology.description,
+          url : updatedScienceTechnology.url,
 
         },
       }
