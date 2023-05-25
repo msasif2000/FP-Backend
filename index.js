@@ -23,40 +23,40 @@ async function run() {
   try {
     await client.connect()
     const database = client.db('Booklet')
-    const childrenCollection = database.collection('Childrens')
-    const literaryCollection = database.collection('literaryfiction')
-    const sciencetechnology = database.collection('ScienceTechnology')
+    const allBookCollection = database.collection('allBooks')
     const userCollection = database.collection('Signup')
     console.log('database connected')
 
-    //  ################ children API START HERE ######################
+    //  ################ allBook API START HERE ######################
 
-    //  ++++++++++++++++  send childrens to the database ++++++++++++++
-    app.post('/childrens', async (req, res) => {
-      const children = req.body
-      const result = await childrenCollection.insertOne(children)
+    //  ++++++++++++++++  send allBooks to the database ++++++++++++++
+    app.post('/allBooks', async (req, res) => {
+      const allBook = req.body
+      const result = await allBookCollection.insertOne(allBook)
       res.json(result)
     })
 
     // +++++++++++++++++ update data into products collection ++++++++
-    app.put('/childrens/:id([0-9a-fA-F]{24})', async (req, res) => {
+    app.put('/allBooks/:id([0-9a-fA-F]{24})', async (req, res) => {
       const id = req.params.id.trim()
       console.log('updating', id)
-      const updatedchildren = req.body
-      console.log(updatedchildren)
+      const updatedallBook = req.body
+      console.log(updatedallBook)
       const filter = { _id: new ObjectId(id) }
       const options = { upsert: true }
       const updateDoc = {
         $set: {
-          bookname : updatedchildren.bookname,
-          author_name : updatedchildren.author_name,
-          description : updatedchildren.description,
-          url : updatedchildren.url,
-          img : updatedchildren.img,
+          bookname : updatedallBook.bookname,
+          author_name : updatedallBook.author_name,
+          description : updatedallBook.description,
+          category : updatedallBook.category,
+          url : updatedallBook.url,
+          img : updatedallBook.img,
+          date : Date.now(),
           
         },
       }
-      const result = await childrenCollection.updateOne(
+      const result = await allBookCollection.updateOne(
         filter,
         updateDoc,
         options,
@@ -66,161 +66,34 @@ async function run() {
     })
 
   
-    //  ++++++++++++++++++++ get all childrens +++++++++++++++++++++++++++
-    app.get('/childrens', async (req, res) => {
-      const cursor = childrenCollection.find({})
-      const children = await cursor.toArray()
-      res.send(children)
+    //  ++++++++++++++++++++ get all allBooks +++++++++++++++++++++++++++
+    app.get('/allBooks', async (req, res) => {
+      const cursor = allBookCollection.find({})
+      const allBook = await cursor.toArray()
+      res.send(allBook)
     })
 
 
-    // +++++++++++++++++++ get a single children from children collection ++++++++
-    app.get('/childrens/:id([0-9a-fA-F]{24})', async (req, res) => {
+    // +++++++++++++++++++ get a single allBook from allBook collection ++++++++
+    app.get('/allBooks/:id([0-9a-fA-F]{24})', async (req, res) => {
+      console.log(req.params.id)
       const id = req.params.id.trim()
       const query = { _id: ObjectId(id) }
-      const children = await childrenCollection.findOne(query)
-      res.json(children)
+      const allBook = await allBookCollection.findOne(query)
+      res.json(allBook)
     })
 
     
 
-    // ++++++++++++++++ delete a data from children collection +++++++++++++++++
-    app.delete('/childrens/:id([0-9a-fA-F]{24})', async (req, res) => {
+    // ++++++++++++++++ delete a data from allBook collection +++++++++++++++++
+    app.delete('/allBooks/:id([0-9a-fA-F]{24})', async (req, res) => {
       const id = req.params.id.trim()
       const query = { _id: new ObjectId(id) }
-      const result = await childrenCollection.deleteOne(query)
+      const result = await allBookCollection.deleteOne(query)
       res.json(result)
     })
 
-    //  ################ children API END HERE ######################
-
-    //  ################ literaryfiction API START HERE ######################
-
-    //  ++++++++++++++++  send literaryfiction to the database ++++++++++++++
-    app.post('/literaryfiction', async (req, res) => {
-      const literaryfiction = req.body
-      const result = await literaryCollection.insertOne(literaryfiction)
-      res.json(result)
-    })
-
-    // +++++++++++++++++ update data into products collection ++++++++
-    app.put('/literaryfiction/:id([0-9a-fA-F]{24})', async (req, res) => {
-      const id = req.params.id.trim()
-      console.log('updating', id)
-      const updatedliteraryfiction = req.body
-      console.log(updatedliteraryfiction)
-      const filter = { _id: new ObjectId(id) }
-      const options = { upsert: true }
-      const updateDoc = {
-        $set: {
-          img : updatedliteraryfiction.img,
-          bookname : updatedliteraryfiction.bookname,
-          author_name : updatedliteraryfiction.author_name,
-          description : updatedliteraryfiction.description,
-          url : updatedliteraryfiction.url,
-
-        },
-      }
-      const result = await literaryCollection.updateOne(
-        filter,
-        updateDoc,
-        options,
-      )
-      console.log('updating', id)
-      res.json(result)
-    })
-
-
-    //  ++++++++++++++++++++ get all literaryfiction +++++++++++++++++++++++++++
-    app.get('/literaryfiction', async (req, res) => {
-      const cursor = literaryCollection.find({})
-      const literaryfiction = await cursor.toArray()
-      res.send(literaryfiction)
-    })
-
-
-    // +++++++++++++++++++ get a single literaryfiction from literaryfiction collection ++++++++
-    app.get('/literaryfiction/:id([0-9a-fA-F]{24})', async (req, res) => {
-      const id = req.params.id.trim()
-      const query = { _id: ObjectId(id) }
-      const literaryfiction = await literaryCollection.findOne(query)
-      res.json(literaryfiction)
-    })
-
-
-    // ++++++++++++++++ delete a data from literaryfiction collection +++++++++++++++++
-    app.delete('/literaryfiction/:id([0-9a-fA-F]{24})', async (req, res) => {
-      const id = req.params.id.trim()
-      const query = { _id: new ObjectId(id) }
-      const result = await literaryCollection.deleteOne(query)
-      res.json(result)
-    })
-
-    //  ################ literaryfiction API END HERE ######################
-
-    //  ################ ScienceTechnology API START HERE ######################
-
-    //  ++++++++++++++++  send ScienceTechnology to the database ++++++++++++++
-    app.post('/ScienceTechnology', async (req, res) => {
-      const ScienceTechnology = req.body
-      const result = await sciencetechnology.insertOne(ScienceTechnology)
-      res.json(result)
-    })
-
-    // +++++++++++++++++ update data into products collection ++++++++
-    app.put('/ScienceTechnology/:id([0-9a-fA-F]{24})', async (req, res) => {
-      const id = req.params.id.trim()
-      console.log('updating', id)
-      const updatedScienceTechnology = req.body
-      console.log(updatedScienceTechnology)
-      const filter = { _id: new ObjectId(id) }
-      const options = { upsert: true }
-      const updateDoc = {
-        $set: {
-          img : updatedScienceTechnology.img,
-          bookname : updatedScienceTechnology.bookname,
-          author_name : updatedScienceTechnology.author_name,
-          description : updatedScienceTechnology.description,
-          url : updatedScienceTechnology.url,
-
-        },
-      }
-      const result = await sciencetechnology.updateOne(
-        filter,
-        updateDoc,
-        options,
-      )
-      console.log('updating', id)
-      res.json(result)
-    })
-
-
-    //  ++++++++++++++++++++ get all ScienceTechnology +++++++++++++++++++++++++++
-    app.get('/ScienceTechnology', async (req, res) => {
-      const cursor = sciencetechnology.find({})
-      const ScienceTechnology = await cursor.toArray()
-      res.send(ScienceTechnology)
-    })
-
-
-    // +++++++++++++++++++ get a single ScienceTechnology from ScienceTechnology collection ++++++++
-    app.get('/ScienceTechnology/:id([0-9a-fA-F]{24})', async (req, res) => {
-      const id = req.params.id.trim()
-      const query = { _id: ObjectId(id) }
-      const ScienceTechnology = await sciencetechnology.findOne(query)
-      res.json(ScienceTechnology)
-    })
-
-
-    // ++++++++++++++++ delete a data from ScienceTechnology collection +++++++++++++++++
-    app.delete('/ScienceTechnology/:id([0-9a-fA-F]{24})', async (req, res) => {
-      const id = req.params.id.trim()
-      const query = { _id: new ObjectId(id) }
-      const result = await sciencetechnology.deleteOne(query)
-      res.json(result)
-    })
-
-    //  ################ ScienceTechnology API END HERE ######################
+    //  ################ allBook API END HERE ######################
 
 
     //  ################ user API START HERE ######################
@@ -232,7 +105,7 @@ async function run() {
       const email=user.email
       const name=await userCollection.findOne({email:email})
       if(name){
-        res.send({status:"error"})
+        res.send({status:"User Already Exist"})
       }
       else{
         const result = await userCollection.insertOne(user)
@@ -247,7 +120,7 @@ async function run() {
       res.send(user)
     })
 
-    // +++++++++++++++++++ get a single user from children collection ++++++++
+    // +++++++++++++++++++ get a single user from allBook collection ++++++++
     app.get('/Signup/:id([0-9a-fA-F]{24})', async (req, res) => {
       const id = req.params.id.trim()
       const query = { _id: ObjectId(id) }
@@ -261,13 +134,14 @@ async function run() {
       const password=user.password
 
       const emailcheck=await userCollection.findOne({email:email})
-      if(email){
+      if(emailcheck){
         const passwordcheck=await userCollection.findOne({password:password})
         if(passwordcheck){
-          res.send({status:"success"})
+          res.send({status:"Login Successfull",
+          isUser:true})
         }
         else{
-          res.send({status:"error"})
+          res.send({status:"Invalid"})
         }
       }
       else{
