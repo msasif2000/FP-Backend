@@ -25,7 +25,41 @@ async function run() {
     const database = client.db('Booklet')
     const allBookCollection = database.collection('allBooks')
     const userCollection = database.collection('Signup')
+    const feedbackCollection = database.collection('feedback')
     console.log('database connected')
+
+    //  ################ feedback API START HERE ######################
+    //  ++++++++++++++++  send feedback to the database ++++++++++++++
+    app.post('/feedback', async (req, res) => {
+      const feedback = req.body
+      const result = await feedbackCollection.insertOne(feedback)
+      res.json(result)
+    })
+
+    // +++++++++++++++++ update data into book collection ++++++++
+    app.put('/feedback/:id([0-9a-fA-F]{24})', async (req, res) => {
+      const id = req.params.id.trim()
+      console.log('updating', id)
+      const updatedfeedback = req.body
+      console.log(updatedfeedback)
+      const filter = { _id: new ObjectId(id) }
+      const options = { upsert: true }
+      const updateDoc = {
+        $set: {
+          uname : updatedfeedback.name,
+          mail : updatedfeedback.email,
+          message : updatedfeedback.message,
+        },
+      }
+      const result = await feedbackCollection.updateOne(
+        filter,
+        updateDoc,
+        options,
+      )
+      console.log('updating', id)
+      res.json(result)
+    })
+    
 
     //  ################ allBook API START HERE ######################
 
@@ -36,7 +70,7 @@ async function run() {
       res.json(result)
     })
 
-    // +++++++++++++++++ update data into products collection ++++++++
+    // +++++++++++++++++ update data into book collection ++++++++
     app.put('/allbook/:id([0-9a-fA-F]{24})', async (req, res) => {
       const id = req.params.id.trim()
       console.log('updating', id)
