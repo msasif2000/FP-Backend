@@ -29,15 +29,15 @@ async function run() {
 
     //  ################ allBook API START HERE ######################
 
-    //  ++++++++++++++++  send allBooks to the database ++++++++++++++
-    app.post('/allBooks', async (req, res) => {
+    //  ++++++++++++++++  send allbooks to the database ++++++++++++++
+    app.post('/allbooks', async (req, res) => {
       const allBook = req.body
       const result = await allBookCollection.insertOne(allBook)
       res.json(result)
     })
 
     // +++++++++++++++++ update data into products collection ++++++++
-    app.put('/allBooks/:id([0-9a-fA-F]{24})', async (req, res) => {
+    app.put('/allbook/:id([0-9a-fA-F]{24})', async (req, res) => {
       const id = req.params.id.trim()
       console.log('updating', id)
       const updatedallBook = req.body
@@ -53,7 +53,6 @@ async function run() {
           url : updatedallBook.url,
           img : updatedallBook.img,
           date : Date.now(),
-          
         },
       }
       const result = await allBookCollection.updateOne(
@@ -66,8 +65,8 @@ async function run() {
     })
 
   
-    //  ++++++++++++++++++++ get all allBooks +++++++++++++++++++++++++++
-    app.get('/allBooks', async (req, res) => {
+    //  ++++++++++++++++++++ get all allbooks +++++++++++++++++++++++++++
+    app.get('/allbook', async (req, res) => {
       const cursor = allBookCollection.find({})
       const allBook = await cursor.toArray()
       res.send(allBook)
@@ -75,18 +74,20 @@ async function run() {
 
 
     // +++++++++++++++++++ get a single allBook from allBook collection ++++++++
-    app.get('/allBooks/:id([0-9a-fA-F]{24})', async (req, res) => {
+    app.get('/allbook/:id([0-9a-fA-F]{24})', async (req, res) => {
       console.log(req.params.id)
       const id = req.params.id.trim()
+      console.log('getting single product', id)
       const query = { _id: ObjectId(id) }
       const allBook = await allBookCollection.findOne(query)
+      console.log('single product', allBook)
       res.json(allBook)
     })
 
     
 
     // ++++++++++++++++ delete a data from allBook collection +++++++++++++++++
-    app.delete('/allBooks/:id([0-9a-fA-F]{24})', async (req, res) => {
+    app.delete('/allbook/:id([0-9a-fA-F]{24})', async (req, res) => {
       const id = req.params.id.trim()
       const query = { _id: new ObjectId(id) }
       const result = await allBookCollection.deleteOne(query)
